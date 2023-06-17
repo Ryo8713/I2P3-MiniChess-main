@@ -16,9 +16,11 @@ int State::evaluate(){   //0=empty, 1=pawn, 2=rook, 3=knight, 4=bishop, 5=queen,
   int my_value =0;
   int opponent_value =0;  //value: pawn = 5, rook = 15, bishop = 15, knight = 25
   int now;                     // queen = 35, king = 40
+  auto self_board = this->board.board[this->player];
+  auto oppn_board = this->board.board[1 - this->player];
   for(int i=0; i<BOARD_H; i+=1){ //calculate my value
     for(int j=0; j<BOARD_W; j+=1){
-      if((now=this->board[this->player][i][j])){
+      if((now=self_board[i][j])){
         switch(now){
           case 1:
             if(!this->player){
@@ -48,11 +50,12 @@ int State::evaluate(){   //0=empty, 1=pawn, 2=rook, 3=knight, 4=bishop, 5=queen,
             my_value+=40;
             break;
         }
+      }
     }
   }
   for(int i=0; i<BOARD_H; i+=1){ //calculate opponent value
     for(int j=0; j<BOARD_W; j+=1){
-      if((now=this->board[1-this->player][i][j])){
+      if((now=oppn_board[i][j])){
         switch(now){
           case 1:
             if(!(1-this->player)){
@@ -82,6 +85,7 @@ int State::evaluate(){   //0=empty, 1=pawn, 2=rook, 3=knight, 4=bishop, 5=queen,
             my_value+=40;
             break;
         }
+      }
     }
   }
   return my_value-opponent_value;

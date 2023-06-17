@@ -3,7 +3,7 @@
 
 #include "../config.hpp"
 #include "../state/state.hpp"
-#include "../policy/random.hpp"
+#include "../policy/Minimax.hpp"
 
 
 State* root;
@@ -41,8 +41,8 @@ void read_board(std::ifstream& fin) {
 void write_valid_spot(std::ofstream& fout) {
   // Keep updating the output until getting killed.
   while(true) {
-    // Choose a random spot.
-    auto move = Random::get_move(root, 0);
+    // Choose a best spot.
+    auto move = Minimax::get_move(root, 0);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second << std::endl;
     

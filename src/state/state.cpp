@@ -11,9 +11,80 @@
  * 
  * @return int 
  */
-int State::evaluate(){
+int State::evaluate(){   //0=empty, 1=pawn, 2=rook, 3=knight, 4=bishop, 5=queen, 6=king
   // [TODO] design your own evaluation function
-  return 0;
+  int my_value =0;
+  int opponent_value =0;  //value: pawn = 5, rook = 15, bishop = 15, knight = 25
+  int now;                     // queen = 35, king = 40
+  for(int i=0; i<BOARD_H; i+=1){ //calculate my value
+    for(int j=0; j<BOARD_W; j+=1){
+      if((now=this->board[this->player][i][j])){
+        switch(now){
+          case 1:
+            if(!this->player){
+              if(i==1)
+                my_value+=35;
+              else
+                my_value+=5;
+            }
+            else{
+              if(i==4)
+                my_value+=35;
+              else  
+                my_value+=5;
+            }
+            break;
+          case 2:
+          case 4:
+            my_value+=15;
+            break;
+          case 3:
+            my_value+=25;
+            break;
+          case 5:
+            my_value+=35;
+            break;
+          case 6:
+            my_value+=40;
+            break;
+        }
+    }
+  }
+  for(int i=0; i<BOARD_H; i+=1){ //calculate opponent value
+    for(int j=0; j<BOARD_W; j+=1){
+      if((now=this->board[1-this->player][i][j])){
+        switch(now){
+          case 1:
+            if(!(1-this->player)){
+              if(i==1)
+                my_value+=35;
+              else
+                my_value+=5;
+            }
+            else{
+              if(i==4)
+                my_value+=35;
+              else  
+                my_value+=5;
+            }
+            break;
+          case 2:
+          case 4:
+            my_value+=15;
+            break;
+          case 3:
+            my_value+=25;
+            break;
+          case 5:
+            my_value+=35;
+            break;
+          case 6:
+            my_value+=40;
+            break;
+        }
+    }
+  }
+  return my_value-opponent_value;
 }
 
 

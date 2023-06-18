@@ -20,20 +20,13 @@ Move Minimax::get_move(State *state, int depth){
   Move max_move;
   int now;
   for(auto c:actions){
-    State* next = state->next_state(c);
-    now = next->evaluate();
+    now = state->next_state(c)->evaluate();
     cout<<"value: "<<now<<endl;
     cout<<"max: "<<max_value<<endl;
-    if(!max_value){
-        max_value = now;
-        max_move = c;
-    }
-    else{
-        if(now>max_value){
-            max_value = now;
-            max_move = c;
-        }
-    }   
+    if(now>max_value){
+      max_value = now;
+      max_move = c;
+    }  
   }
   return max_move;
 }

@@ -43,7 +43,7 @@ void write_valid_spot(std::ofstream& fout) {
   while(true) {
     // Choose a best spot.
     std::cout<<"asd\n";
-    auto move = Minimax::get_move(root, 0);
+    auto move = Minimax::get_move(root, 3); ///////////////
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second << std::endl;
     

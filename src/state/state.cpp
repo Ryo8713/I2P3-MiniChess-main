@@ -53,48 +53,171 @@ int value_list(int type){
 int State::evaluate(){   //0=empty, 1=pawn, 2=rook, 3=knight, 4=bishop, 5=queen, 6=king
   // [TODO] design your own evaluation function
   int my_value =0;
-  int opponent_value =0;  //value: pawn = 5, rook = 15, bishop = 15, knight = 25
-  int now;                     // queen = 35, king = 40
+  int opponent_value =0;  //value: pawn = 10, rook = 50, bishop = 30, knight = 30
+  int now;                     // queen = 90, king = 900
+  int a,b,temp,max=0;
   auto self_board = this->board.board[this->player];
-  auto oppon_board = this->board.board[1-this->player];
+  auto oppn_board = this->board.board[1 - this->player];
   for(int i=0; i<BOARD_H; i+=1){ //calculate my value
     for(int j=0; j<BOARD_W; j+=1){
       if((now=self_board[i][j])){
         switch(now){
-          case 1:
-            if(!this->player){
-              if(i==1)
+          case 1:      //pawn
+            if(!this->player){ //white
+              if(i==1)          // promote
                 my_value+=90;
               else
                 my_value+=10;
+              max=0;
+              if(i-1>=0&&i-1<6){
+                if(j+1>=0&&j+1<5){
+                  if(oppn_board[i-1][j+1]){
+                    max = value_list(oppn_board[i-1][j+1]);
+                  }
+                }
+                if(j-1>=0&&j-1<5){
+                  if(oppn_board[i-1][j-1]){
+                    temp = value_list(oppn_board[i-1][j-1]);
+                    max = temp>max?temp:max;
+                  }
+                }
+              }
+              my_value+=max;
             }
             else{
               if(i==4)
                 my_value+=90;
               else  
                 my_value+=10;
+              max=0;
+              if(i+1>=0&&i+1<6){
+                if(j+1>=0&&j+1<5){
+                  if(oppn_board[i+1][j+1]){
+                    max = value_list(oppn_board[i+1][j+1]);
+                  }
+                }
+                if(j-1>=0&&j-1<5){
+                  if(oppn_board[i+1][j-1]){
+                    temp = value_list(oppn_board[i+1][j-1]);
+                    max = temp>max?temp:max;
+                  }
+                }
+              }
+              my_value+=max;
             }
             break;
           case 2:
             my_value+=50;
+            //int a,b,temp,max=0;
+            max=0;
+            for(int x=0;x<=3;x++){
+              for(int y=0;y<=6;y++){
+                a = i+move_table_rook_bishop[x][y][0];
+                b = j+move_table_rook_bishop[x][y][1];
+                if(a>=0&&a<6&&b>=0&&b<5){
+                  if(self_board[a][b])
+                    break;
+                  if(oppn_board[a][b]){
+                    temp = value_list(oppn_board[a][b]);
+                    max = temp>max?temp:max;
+                    break;
+                  }
+                }
+                else{
+                  break;
+                }
+              }
+            }
+            my_value+=max;
             break;
           case 3:
+            my_value+=30;
+            //int a,b,temp,max=0;
+            max=0;
+            for(int x=0;x<=7;x++){
+              a = i + move_table_knight[x][0];
+              b = j + move_table_knight[x][1];
+              if(a>=0&&a<6&&b>=0&&b<5){
+                if(oppn_board[a][b]){
+                  temp = value_list(oppn_board[a][b]);
+                  max = temp>max?temp:max;
+                }
+              }
+            }
+            my_value+=max;
+            break;
           case 4:
             my_value+=30;
+            //int a,b,temp,max=0;
+            max=0;
+            for(int x=4;x<=7;x++){
+              for(int y=0;y<=6;y++){
+                a = i+move_table_rook_bishop[x][y][0];
+                b = j+move_table_rook_bishop[x][y][1];
+                if(a>=0&&a<6&&b>=0&&b<5){
+                  if(self_board[a][b])
+                    break;
+                  if(oppn_board[a][b]){
+                    temp = value_list(oppn_board[a][b]);
+                    max = temp>max?temp:max;
+                    break;
+                  }
+                }
+                else{
+                  break;
+                }
+              }
+            }
+            my_value+=max;
             break;
           case 5:
             my_value+=90;
+            //int a,b,temp,max=0;
+            max=0;
+            for(int x=0;x<=7;x++){
+              for(int y=0;y<=6;y++){
+                a = i+move_table_rook_bishop[x][y][0];
+                b = j+move_table_rook_bishop[x][y][1];
+                if(a>=0&&a<6&&b>=0&&b<5){
+                  if(self_board[a][b])
+                    break;
+                  if(oppn_board[a][b]){
+                    temp = value_list(oppn_board[a][b]);
+                    max = temp>max?temp:max;
+                    break;
+                  }
+                }
+                else{
+                  break;
+                }
+              }
+            }
+            my_value+=max;
             break;
           case 6:
             my_value+=900;
+            max=0;
+            //int a,b,temp,max=0;
+            for(int x=0;x<=7;x++){
+              a = i+move_table_king[x][0];
+              b = j+move_table_king[x][1];
+              if(a>=0&&a<6&&b>=0&&b<5){
+                if(oppn_board[a][b]){
+                  temp = value_list(oppn_board[a][b]);
+                  max = temp>max?temp:max;
+                }
+              }
+            }
+            my_value+=max;
             break;
         }
       }
     }
   }
   for(int i=0; i<BOARD_H; i+=1){ //calculate opponent value
-    for(int j=0; j<BOARD_W; j+=1){
-      if((now=oppon_board[i][j])){
+    for(int j=0; j<BOARD_W; j+=1){//value: pawn = 10, rook = 50, bishop = 30, knight = 30
+                                        // queen = 90, king = 900
+      if((now=oppn_board[i][j])){
         switch(now){
           case 1:
             if(!(1-this->player)){
@@ -112,7 +235,7 @@ int State::evaluate(){   //0=empty, 1=pawn, 2=rook, 3=knight, 4=bishop, 5=queen,
             break;
           case 2:
             opponent_value+=50;
-            break;
+          break;
           case 3:
           case 4:
             opponent_value+=30;
@@ -127,7 +250,6 @@ int State::evaluate(){   //0=empty, 1=pawn, 2=rook, 3=knight, 4=bishop, 5=queen,
       }
     }
   }
-  
   return my_value-opponent_value;
 }
 
